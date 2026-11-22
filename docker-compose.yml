@@ -1,0 +1,13 @@
+# Only IPFS runs here. The Fabric network is started by fabric-samples (see scripts/).
+services:
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: research-ipfs
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5001"   # API  (used by the Spring Boot backend)
+      - "127.0.0.1:8081:8080"   # HTTP gateway (optional, for debugging)
+    volumes:
+      - ipfs_data:/data/ipfs
+volumes:
+  ipfs_data:

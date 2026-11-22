@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+fabric:
+  channel: ${FABRIC_CHANNEL:mychannel}
+  chaincode: ${FABRIC_CHAINCODE:research}
+  msp-id: ${FABRIC_MSP_ID:Org1MSP}
+  peer-endpoint: ${FABRIC_PEER_ENDPOINT:localhost:7051}
+  peer-host-alias: ${FABRIC_PEER_HOST_ALIAS:peer0.org1.example.com}
+  # folder created by fabric-samples/test-network (relative to the backend/ folder)
+  crypto-path: ${FABRIC_CRYPTO_PATH:../fabric-samples/test-network/organizations/peerOrganizations/org1.example.com}
+  user: ${FABRIC_USER:User1@org1.example.com}
+
+ipfs:
+  api: ${IPFS_API:http://localhost:5001}
+
+app:
+  # 32 random bytes, base64.  Generate with:  openssl rand -base64 32
+  # The app refuses to start without it (there is deliberately no default).
+  master-key: ${MASTER_KEY}

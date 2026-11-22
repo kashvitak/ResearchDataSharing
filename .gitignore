@@ -1,0 +1,15 @@
+# Hyperledger Fabric downloads & binaries
+fabric-samples/
+bin/
+config/
+install-fabric.sh
+
+# Backend secrets & build outputs
+backend/.env.sh
+backend/target/
+*.class
+
+# Frontend dependencies & build outputs
+frontend/node_modules/
+frontend/dist/
+.DS_Store
