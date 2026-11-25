@@ -1,7 +1,7 @@
 # Hyperledger Fabric downloads & binaries
 fabric-samples/
-bin/
-config/
+/bin/
+/config/
 install-fabric.sh
 
 # Backend secrets & build outputs
@@ -13,3 +13,5 @@ backend/target/
 frontend/node_modules/
 frontend/dist/
 .DS_Store
+*.log
+chaincode/research-ip/vendor/

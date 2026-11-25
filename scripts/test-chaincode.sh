@@ -11,6 +11,7 @@ inv() {
     --peerAddresses localhost:7051 --tlsRootCertFiles "$ORG1_TLS" \
     --peerAddresses localhost:9051 --tlsRootCertFiles "$ORG2_TLS" \
     -c "$1" 2>&1 | grep -E "Chaincode invoke|Error|error" || true
+  sleep 3
 }
 qry() { peer chaincode query -C mychannel -n research -c "$1"; echo; }
 

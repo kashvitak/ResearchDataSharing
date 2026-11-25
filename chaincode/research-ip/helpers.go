@@ -65,7 +65,7 @@ func writeLog(ctx Ctx, assetID, action, actor string, version int) error {
 		return err
 	}
 	txid := ctx.GetStub().GetTxID()
-	key, err := ctx.GetStub().CreateCompositeKey("LOG", []string{assetID, fmt.Sprintf("%020d", t.UnixNano()), txid})
+	key, err := ctx.GetStub().CreateCompositeKey("LOG", []string{assetID, fmt.Sprintf("%020d", t.UnixNano()), txid, action})
 	if err != nil {
 		return err
 	}
