@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Concurrency test: two updates to the SAME asset version are submitted at the same time.
-# Expected result: exactly ONE is accepted, the other is rejected (MVCC conflict or the
-# chaincode's "open proposal / locked" check). This demonstrates conflict control on the ledger.
+# Expected: the ledger accepts exactly ONE; the other is invalidated at commit time
+# (MVCC_READ_CONFLICT) or refused by the chaincode's lock/version check.
 #
-# Usage (from repo root, with the network running and the chaincode deployed):
+# NOTE: `peer chaincode invoke` only reports that the transaction was handed to the orderer.
+# It does NOT wait for the commit, so both CLI calls print "invoke successful" even when the
+# ledger later invalidates one of them. The truth is read back from the ledger instead:
+# only valid transactions leave a PROPOSE entry in the provenance history.
+#
+# Usage (from repo root, network running, chaincode deployed):
 #   ./scripts/concurrency-test.sh | tee docs/concurrency-test-output.txt
-#
-# It is safe to run on a ledger that already has the demo DIDs: setup errors such as
-# "already exists" are ignored, and the test uses its own asset id.
 set -uo pipefail
 source "$(dirname "$0")/env.sh"
 
@@ -38,29 +40,36 @@ quiet "{\"function\":\"AssignRole\",\"Args\":[\"$ADMIN\",\"$BOB\",\"CSE\",\"RESE
 
 echo "== register asset $ASSET (version 1)"
 invoke "{\"function\":\"RegisterAsset\",\"Args\":[\"$ALICE\",\"$ASSET\",\"conc.csv\",\"QmBaseCid\",\"$H1\",\"CONFIDENTIAL\"]}" | grep -E "invoke successful|Error" || true
-sleep 3
+sleep 4
 qry "{\"function\":\"GetAsset\",\"Args\":[\"$ALICE\",\"$ASSET\"]}"
 
-echo "== two users propose an update to version 1 AT THE SAME TIME"
+echo "== two updates to version 1 are submitted AT THE SAME TIME"
 OUT1=$(mktemp); OUT2=$(mktemp)
 invoke "{\"function\":\"ProposeUpdate\",\"Args\":[\"$ALICE\",\"$ASSET\",\"QmCidFromTx1\",\"$H2\",\"1\"]}" > "$OUT1" &
 invoke "{\"function\":\"ProposeUpdate\",\"Args\":[\"$ALICE\",\"$ASSET\",\"QmCidFromTx2\",\"$H3\",\"1\"]}" > "$OUT2" &
 wait
-sleep 3
+echo "-- CLI answer, transaction 1 (only confirms hand-over to the orderer):"
+grep -E "invoke successful|Error" "$OUT1" | head -2
+echo "-- CLI answer, transaction 2 (only confirms hand-over to the orderer):"
+grep -E "invoke successful|Error" "$OUT2" | head -2
 
-echo
-echo "-- transaction 1:"; grep -E "invoke successful|Error|MVCC|invalid|locked|proposal" "$OUT1" | head -3
-echo "-- transaction 2:"; grep -E "invoke successful|Error|MVCC|invalid|locked|proposal" "$OUT2" | head -3
+echo "== waiting for the block to be committed..."
+sleep 6
 
-OK=$(grep -l "invoke successful" "$OUT1" "$OUT2" 2>/dev/null | wc -l)
-echo
-echo "== final state of $ASSET"
+echo "== what the LEDGER accepted"
+echo "-- asset:"
 qry "{\"function\":\"GetAsset\",\"Args\":[\"$ALICE\",\"$ASSET\"]}"
+echo "-- winning proposal:"
+qry "{\"function\":\"GetProposal\",\"Args\":[\"$ALICE\",\"$ASSET\"]}"
+echo "-- provenance history:"
+HIST=$(qry "{\"function\":\"GetAssetHistory\",\"Args\":[\"$ALICE\",\"$ASSET\"]}")
+echo "$HIST"
 
+ACCEPTED=$(echo "$HIST" | grep -o '"action":"PROPOSE"' | wc -l)
 echo "== RESULT"
-if [ "$OK" -eq 1 ]; then
-  echo "PASS: exactly 1 of 2 concurrent updates was accepted; the other was rejected."
+if [ "$ACCEPTED" -eq 1 ]; then
+  echo "PASS: 2 updates were submitted concurrently; the ledger accepted exactly 1 and invalidated the other."
 else
-  echo "FAIL: $OK of 2 concurrent updates were accepted (expected exactly 1)."
+  echo "FAIL: the ledger accepted $ACCEPTED of the 2 concurrent updates (expected exactly 1)."
 fi
 rm -f "$OUT1" "$OUT2"

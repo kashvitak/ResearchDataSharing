@@ -1,17 +1,22 @@
 == setup (errors like 'already exists' are ignored)
-== register asset DS-CONC-1795677258 (version 1)
-[34m2026-11-26 07:14:44.326 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
-{"assetId":"DS-CONC-1795677258","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"ACTIVE","version":1,"updatedAt":"2026-11-26T07:14:44Z"}
+== register asset DS-CONC-1795678620 (version 1)
+[34m2026-11-26 07:37:26.388 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+{"assetId":"DS-CONC-1795678620","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"ACTIVE","version":1,"updatedAt":"2026-11-26T07:37:26Z"}
 
-== two users propose an update to version 1 AT THE SAME TIME
+== two updates to version 1 are submitted AT THE SAME TIME
+-- CLI answer, transaction 1 (only confirms hand-over to the orderer):
+[34m2026-11-26 07:37:30.670 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+-- CLI answer, transaction 2 (only confirms hand-over to the orderer):
+[34m2026-11-26 07:37:30.670 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+== waiting for the block to be committed...
+== what the LEDGER accepted
+-- asset:
+{"assetId":"DS-CONC-1795678620","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"PENDING_UPDATE","version":1,"updatedAt":"2026-11-26T07:37:26Z"}
 
--- transaction 1:
-[34m2026-11-26 07:14:47.617 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
--- transaction 2:
-[34m2026-11-26 07:14:47.618 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+-- winning proposal:
+{"assetId":"DS-CONC-1795678620","proposerDid":"did:fabric:snu:alice","newCid":"QmCidFromTx1","newHash":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","baseVersion":1,"nonce":1,"required":1,"approvals":[],"deadline":"2026-11-29T07:37:30Z","open":true}
 
-== final state of DS-CONC-1795677258
-{"assetId":"DS-CONC-1795677258","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"PENDING_UPDATE","version":1,"updatedAt":"2026-11-26T07:14:44Z"}
-
+-- provenance history:
+[{"assetId":"DS-CONC-1795678620","action":"REGISTER","actorDid":"did:fabric:snu:alice","version":1,"txId":"24bbf04e993055d8382c94adbd88c1412e321abb605d8ec6a694379205d022f3","timestamp":"2026-11-26T07:37:26Z"},{"assetId":"DS-CONC-1795678620","action":"PROPOSE","actorDid":"did:fabric:snu:alice","version":1,"txId":"43b607180d1c6a74647a99895c217810b3b3affeb364da40bff3e37378d3fcae","timestamp":"2026-11-26T07:37:30Z"}]
 == RESULT
-FAIL: 2 of 2 concurrent updates were accepted (expected exactly 1).
+PASS: 2 updates were submitted concurrently; the ledger accepted exactly 1 and invalidated the other.
