@@ -1,0 +1,78 @@
+╔══════════════════════════════════════════════════════════════════╗
+║   ResearchVault — Live Fabric Benchmark Results                 ║
+║   Network : Hyperledger Fabric 2.5 (Raft, 1 orderer, 2 peers)  ║
+║   Channel : mychannel                                          ║
+║   Chaincode: research v1.0                                     ║
+║   Date    : 2026-11-27 00:08:29 IST                             ║
+║   Host    : arm64 macOS, Docker Desktop                        ║
+╚══════════════════════════════════════════════════════════════════╝
+
+━━━ Phase 1: DID Creation — 10 new identities ━━━
+  CreateDID bench-1                      268 ms   OK
+  CreateDID bench-2                      101 ms   OK
+  CreateDID bench-3                       93 ms   OK
+  CreateDID bench-4                       96 ms   OK
+  CreateDID bench-5                       81 ms   OK
+  CreateDID bench-6                       92 ms   OK
+  CreateDID bench-7                       90 ms   OK
+  CreateDID bench-8                       84 ms   OK
+  CreateDID bench-9                       90 ms   OK
+  CreateDID bench-10                      90 ms   OK
+
+━━━ Phase 2: GetAsset queries — existing asset SA-002 (10×) ━━━
+  GetAsset SA-002 (#1)                    72 ms   OK
+  GetAsset SA-002 (#2)                    69 ms   OK
+  GetAsset SA-002 (#3)                    67 ms   OK
+  GetAsset SA-002 (#4)                    71 ms   OK
+  GetAsset SA-002 (#5)                    67 ms   OK
+  GetAsset SA-002 (#6)                    67 ms   OK
+  GetAsset SA-002 (#7)                    69 ms   OK
+  GetAsset SA-002 (#8)                    67 ms   OK
+  GetAsset SA-002 (#9)                    69 ms   OK
+  GetAsset SA-002 (#10)                   69 ms   OK
+
+━━━ Phase 3: RegisterAsset — 10 new assets by alice ━━━
+  RegisterAsset BM-1                      83 ms   ERROR
+  RegisterAsset BM-2                      81 ms   ERROR
+  RegisterAsset BM-3                      79 ms   ERROR
+  RegisterAsset BM-4                      87 ms   ERROR
+  RegisterAsset BM-5                      85 ms   ERROR
+  RegisterAsset BM-6                      80 ms   ERROR
+  RegisterAsset BM-7                      78 ms   ERROR
+  RegisterAsset BM-8                      79 ms   ERROR
+  RegisterAsset BM-9                      79 ms   ERROR
+  RegisterAsset BM-10                     80 ms   ERROR
+
+━━━ Phase 4: GetAssetHistory — SA-002 (10×) ━━━
+  GetAssetHistory SA-002 (#1)            106 ms   OK
+  GetAssetHistory SA-002 (#2)            102 ms   OK
+  GetAssetHistory SA-002 (#3)             84 ms   OK
+  GetAssetHistory SA-002 (#4)             91 ms   OK
+  GetAssetHistory SA-002 (#5)            105 ms   OK
+  GetAssetHistory SA-002 (#6)            115 ms   OK
+  GetAssetHistory SA-002 (#7)             71 ms   OK
+  GetAssetHistory SA-002 (#8)             67 ms   OK
+  GetAssetHistory SA-002 (#9)             77 ms   OK
+  GetAssetHistory SA-002 (#10)            75 ms   OK
+
+━━━ Phase 5: ProposeUpdate + ApproveUpdate — 5 full cycles ━━━
+  ProposeUpdate BM-1                      91 ms   ERROR
+  ApproveUpdate BM-1                     193 ms   ERROR
+  ProposeUpdate BM-2                      76 ms   ERROR
+  ApproveUpdate BM-2                      96 ms   ERROR
+  ProposeUpdate BM-3                      86 ms   ERROR
+  ApproveUpdate BM-3                      95 ms   ERROR
+  ProposeUpdate BM-4                     106 ms   ERROR
+  ApproveUpdate BM-4                      93 ms   ERROR
+  ProposeUpdate BM-5                      98 ms   ERROR
+  ApproveUpdate BM-5                     109 ms   ERROR
+
+━━━ Phase 6: GetAuditLog queries (5×) ━━━
+  GetAuditLog alice                       75 ms   ERROR
+  GetAuditLog kashvi                      79 ms   ERROR
+  GetAuditLog bob                        132 ms   ERROR
+  GetAuditLog shree                       68 ms   ERROR
+  GetAuditLog admin                       67 ms   ERROR
+
+━━━ Phase 7: GrantAccess + RecordAccess (5 cycles) ━━━
+scripts/benchmark.sh: line 144: i�: unbound variable
