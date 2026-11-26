@@ -10,7 +10,7 @@ async function request(path, opts = {}) {
   if (token) headers.Authorization = 'Bearer ' + token;
   const res = await fetch('/api' + path, { ...opts, headers });
   if (!res.ok) {
-    let msg = res.statusText;
+    let msg = res.statusText || `HTTP ${res.status}`;
     try { msg = (await res.json()).error || msg; } catch { /* not json */ }
     throw new Error(msg);
   }
