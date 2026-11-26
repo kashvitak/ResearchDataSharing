@@ -94,6 +94,7 @@ function Login({ ui, onLogin }) {
     const r = await ui.run(async () => {
       const id = await createIdentity(did);
       await api.register(did, id.publicKey, org);
+      importKey(did, id.privateKey);
       return id;
     });
     if (r) {

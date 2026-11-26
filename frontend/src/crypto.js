@@ -8,7 +8,6 @@ export async function createIdentity(did) {
   const kp = await crypto.subtle.generateKey(ALGO, true, ['sign', 'verify']);
   const publicKey = b64(await crypto.subtle.exportKey('spki', kp.publicKey));
   const privateKey = b64(await crypto.subtle.exportKey('pkcs8', kp.privateKey));
-  localStorage.setItem('privkey:' + did, privateKey);
   return { publicKey, privateKey };
 }
 
