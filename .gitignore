@@ -12,6 +12,9 @@ backend/target/
 # Frontend dependencies & build outputs
 frontend/node_modules/
 frontend/dist/
+
+# Go chaincode vendored dependencies (regenerated during deploy-chaincode.sh)
+chaincode/research-ip/vendor/
+
 .DS_Store
 *.log
-chaincode/research-ip/vendor/
