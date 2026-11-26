@@ -1,0 +1,17 @@
+== setup (errors like 'already exists' are ignored)
+== register asset DS-CONC-1795677258 (version 1)
+[34m2026-11-26 07:14:44.326 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+{"assetId":"DS-CONC-1795677258","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"ACTIVE","version":1,"updatedAt":"2026-11-26T07:14:44Z"}
+
+== two users propose an update to version 1 AT THE SAME TIME
+
+-- transaction 1:
+[34m2026-11-26 07:14:47.617 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+-- transaction 2:
+[34m2026-11-26 07:14:47.618 UTC 0001 INFO[0m [chaincodeCmd] [34;1mchaincodeInvokeOrQuery[0m -> Chaincode invoke successful. result: status:200 
+
+== final state of DS-CONC-1795677258
+{"assetId":"DS-CONC-1795677258","name":"conc.csv","ownerDid":"did:fabric:snu:alice","org":"iitd","dept":"CSE","cid":"QmBaseCid","hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","classification":"CONFIDENTIAL","status":"PENDING_UPDATE","version":1,"updatedAt":"2026-11-26T07:14:44Z"}
+
+== RESULT
+FAIL: 2 of 2 concurrent updates were accepted (expected exactly 1).
